@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+	tools {
+        terraform 'Terraform-22'
+    }
+	parameters {
+        choice(name: 'Terraform_State', choices: ['apply','destroy', 'init'], description: 'Terraform states',)
+    }
+    stages{
+            stage('SCM Checkout'){
+                steps{
+	            git 'https://github.com/stephnd2000/myterraformproject.git'
+                    }
+            }
+            stage('Terraform Init'){
+                steps{
+	            sh 'terraform init'
+                    }
+            }
+			stage('Terraform apply'){
+                steps{
+	            sh 'terraform "${Terraform_State}" --auto-approve'
+                    }
+            }
+     }
+}
